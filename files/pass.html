@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Password Test</title>
+</head>
+<body>
+  <h2>Create Account</h2>
+  <form>
+    <label>Password:</label>
+    <input type="password" id="password" />
+    <p id="msg" style="color:red;"></p>
+    <button type="button" onclick="validate()">Submit</button>
+  </form>
+
+  <script>
+    function validate() {
+      const pwd = document.getElementById("password").value;
+      const msg = document.getElementById("msg");
+
+      if (pwd.length < 6) {
+        msg.textContent = "Password too short (min 6 chars)";
+      } else if (pwd.length > 12) {
+        msg.textContent = "Password too long (max 12 chars)";
+      } else {
+        msg.textContent = "Password accepted!";
+        msg.style.color = "green";
+      }
+    }
+  </script>
+</body>
+</html>

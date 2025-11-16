@@ -7,7 +7,7 @@ Ace the labs, pre-upload and read files directly from your terminal using https 
 
 - **GET /solution/:filename** - Retrieve a solution file by filename from the `files` folder
 - **POST /solution** - Upload a new solution file directly to the `files` folder
-- **POST /gemini/query** - Query Google Gemini AI (gemini-2.5-flash model)
+- **GET /gemini** - Query Google Gemini AI (gemini-2.5-flash model) with query parameter
 
 ## Setup
 
@@ -69,14 +69,15 @@ Upload a new solution file directly to the `files` folder.
 }
 ```
 
-### POST /gemini/query
+### GET /gemini
 Query Gemini AI (using gemini-2.5-flash model) with a question.
 
-**Request Body:**
-```json
-{
-  "query": "What is JavaScript?"
-}
+**Parameters:**
+- `query` - The question to ask Gemini (URL query parameter)
+
+**Example:**
+```
+GET /gemini?query=What is JavaScript?
 ```
 
 **Response:**
@@ -161,22 +162,28 @@ curl --no-buffer http://localhost:3000/solution/hello.js
 
 **Mac / Linux:**
 ```bash
-curl -X POST http://localhost:3000/gemini/query \
-  -H "Content-Type: application/json" \
-  -d '{"query": "What is JavaScript?"}'
+# Simple query (spaces will be automatically encoded)
+curl "http://localhost:3000/gemini?query=What is JavaScript?"
+
+# For queries with special characters, use URL encoding or quotes
+curl "http://localhost:3000/gemini?query=What%20is%20JavaScript%3F"
 ```
 
 **Windows PowerShell:**
 ```powershell
-curl -Method POST "http://localhost:3000/gemini/query" `
--Headers @{ "Content-Type" = "application/json" } `
--Body '{ "query": "What is JavaScript?" }' -o filename.txt
+# Simple query
+curl "http://localhost:3000/gemini?query=What is JavaScript?"
+
+# For queries with special characters
+Invoke-WebRequest -Uri "http://localhost:3000/gemini?query=What is JavaScript?" | Select-Object -ExpandProperty Content
 ```
 
 **Windows CMD:**
 ```cmd
-curl -X POST http://localhost:3000/gemini/query ^
-  -H "Content-Type: application/json" ^
-  -d "{\"query\": \"What is JavaScript?\"}"
+REM Simple query
+curl "http://localhost:3000/gemini?query=What is JavaScript?"
+
+REM For queries with special characters, use URL encoding
+curl "http://localhost:3000/gemini?query=What%20is%20JavaScript%3F"
 ```
 

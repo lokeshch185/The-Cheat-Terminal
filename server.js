@@ -124,15 +124,15 @@ app.post('/solution', upload.single('file'), async (req, res) => {
   }
 });
 
-// POST endpoint to query Gemini
-app.post('/gemini/query', async (req, res) => {
+// GET endpoint to query Gemini
+app.get('/gemini', async (req, res) => {
   try {
-    const { query} = req.body;
+    const { query } = req.query;
     
     if (!query) {
       return res.status(400).json({ 
         error: 'Bad request',
-        message: 'Query is required' 
+        message: 'Query parameter is required. Use ?query=your question' 
       });
     }
     
@@ -145,9 +145,7 @@ app.post('/gemini/query', async (req, res) => {
     
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     
-    let prompt = query;
-    
-    const result = await model.generateContent(prompt);
+    const result = await model.generateContent(query);
     const response = await result.response;
     const text = response.text();
     
@@ -180,7 +178,7 @@ app.get('/', (req, res) => {
     endpoints: {
       'GET /solution/:filename': 'Get a solution file by filename',
       'POST /solution': 'Upload a file directly (multipart/form-data, field: "file")',
-      'POST /gemini/query': 'Query Gemini AI',
+      'GET /gemini?query=your question': 'Query Gemini AI',
       'GET /health': 'Health check'
     }
   });

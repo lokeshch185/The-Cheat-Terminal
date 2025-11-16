@@ -1,0 +1,67 @@
+Step 0: Install GnuPG
+- Linux:
+sudo apt update
+sudo apt install gnupg
+- Windows: Install Gpg4win.
+- Mac: Install GPG Suite.
+
+Step 1: Generate Key Pairs
+Alice:
+gpg --full-generate-key
+Follow prompts: RSA and RSA, 4096, name Alice Example, email alice@example.com, passphrase.
+Bob: same steps with bob@example.com
+List keys:
+gpg --list-keys
+gpg --list-secret-keys
+
+Step 2: Create Revocation Certificate
+gpg --output alice-revoke.asc --gen-revoke alice@example.com
+gpg --output bob-revoke.asc --gen-revoke bob@example.com
+
+Step 3: Export Public Keys
+gpg --armor --export alice@example.com > alice_pub.asc
+gpg --armor --export bob@example.com > bob_pub.asc
+
+Step 4: Import Other Person’s Public Key
+Bob imports Alice:
+gpg --import alice_pub.asc
+Alice imports Bob:
+gpg --import bob_pub.asc
+
+Step 5: Encrypt a File (Bob -> Alice)
+Create message:
+echo "Hello Alice, this is a secret message." > message.txt
+Encrypt:
+gpg --encrypt --recipient alice@example.com --armor -o message_to_alice.asc message.txt
+
+Step 6: Decrypt the File (Alice)
+gpg --output decrypted.txt --decrypt message_to_alice.asc
+cat decrypted.txt
+
+Step 7: Create Digital Signature (Alice)
+Detached signature:
+gpg --output report.sig --detach-sign report.pdf
+Clearsign:
+gpg --clearsign message.txt
+
+Step 8: Verify Signatures (Bob)
+gpg --verify report.sig report.pdf
+
+Step 9: Encrypt + Sign (Alice -> Bob)
+gpg --encrypt --sign --recipient bob@example.com --armor -o message_to_bob.asc message.txt
+Bob decrypts:
+gpg --output decrypted.txt --decrypt message_to_bob.asc
+
+Step 10: Key Trust / Web of Trust
+Sign a user's key:
+gpg --sign-key bob@example.com
+Set ownertrust:
+gpg --edit-key bob@example.com
+# trust
+# quit
+
+Step 11: Revoke a Key
+Using revocation certificate:
+gpg --import alice-revoke.asc
+Or generate if you still have private key:
+gpg --gen-revoke alice@example.com > alice-revoke.asc
